@@ -1,4 +1,12 @@
-name: Docker Image CI
+⚠️ Warning: I tried to connect to the following addresses, but was blocked by firewall rules:
+
+
+If you need me to access, download, or install something from one of these locations, you can either:
+
+  - Configure Actions setup steps (https://gh.io/copilot/actions-setup-steps) to set up my env before the firewall is enabled.
+  - Add the appropriate URLs or hosts to my firewall allow list (https://gh.io/copilot/firewall-config)
+
+name: PHP Composer
 
 on:
   push:
@@ -6,66 +14,41 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
+permissions:
+  contents: read
 
+jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: 2B:4D:E5:4A:6B:2F:DD:61:7A:AC:27:F3-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-      
-  - name: Using Node v${{ matrix.node-version }}
-    uses: actions/setup-node@v4
-    with:
-      node-version: ${{ matrix.node-version }}
-      cache: "yarn"
 
-  - name: Install dependencies
-    run: yarn --frozen-lockfile --ignore-engines
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
 
-  - name: Build
-    run: yarn build
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
 
-  - name: Lint
-    run: yarn lint
-  - name: Using Node v${{ matrix.node-version }}
-    uses: actions/setup-node@v4
-    with:
-      node-version: ${{ matrix.node-version }}
-      cache: "yarn"
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
 
-  - uses: pnpm/action-setup@v4
-    with:
-      Version of the blaze plugin:
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-# This version will be overwritten in our rapid builds to the actual version number. We set the
-# default version to 2.0.19 so that a dev plugin built from Piper HEAD will override any production
-# plugin (because IntelliJ will choose the highest version when it sees two conflicting plugins, so
-# version: 2.0.19 > 2017.06.05.0.1)
+    # - name: Run test suite
+    #   run: composer run-script test
 
-
-  - name: Install dependencies
-    run: yarn --frozen-lockfile --ignore-engines --ignore-scripts
-
-  - name: Prepare environment for tests
-    run: yarn build:ci
-
-  - name: Run tests and generate coverage
-    run: yarn test:coverage --ci --shard=${{ matrix.shard }}
-
-  - name: Upload coverage to Codecov
-    uses: codecov/codecov-action@v5
-    with:
-      token: ${{ secrets.CODECOV_TOKEN }}
-      verbose: true
-  - name: Using Node v${{ matrix.node-version }}
-    uses: actions/setup-node@v4
-    with:
-      node-version: ${{ matrix.node-version }}
-      cache: "yarn"
-
-  - name: Install dependencies
-    run: yarn --frozen-lockfile --ignore-engines
+name: =~ m/jo/
+  print "Match found\n"ifandif: true
+  print: "No match found\n"
+endif: "name =~ m/jo/i)"
+  print: {"Match found (case insensitive)\n"else"}
+  print: "No match found (case insensitive)\n"
