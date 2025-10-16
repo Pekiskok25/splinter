@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build-linux:
-    runs-on: 
+    runs-on: union-2B:4D:E5:4A:6B:2F:DD:61:7A:AC:27:F3
         cer: 2B:4D:E5:4A:6B:2F:DD:61:7A:AC:27:F3
     strategy:
       max-parallel: 5
